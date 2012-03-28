@@ -27,7 +27,7 @@
 **
 **
 -->
-<project name="myPluginName" default="dist" basedir=".">
+<project name="jts" default="dist" basedir=".">
     <!-- enter the SVN commit message -->
     <property name="commit.message" value="Commit message"/>
     <!-- enter the *lowest* JOSM version this plugin is currently compatible with -->
@@ -38,7 +38,8 @@
     <property name="plugin.src.dir" value="src"/>
     <!-- this is the directory where the plugin jar is copied to -->
     <property name="plugin.dist.dir" value="../../dist"/>
-    <property name="ant.build.javac.target" value="1.5"/>
+    <property name="ant.build.javac.target" value="1.6"/>
+    <property name="ant.build.javac.source" value="1.6"/>
     <property name="plugin.dist.dir" value="../../dist"/>
     <property name="plugin.jar" value="${plugin.dist.dir}/${ant.project.name}.jar"/>
     <!--
@@ -57,6 +58,12 @@
     <target name="compile" depends="init">
         <echo message="compiling sources for  ${plugin.jar} ... "/>
         <javac srcdir="src" classpath="${josm}" debug="true" destdir="${plugin.build.dir}">
+            <classpath>
+                <pathelement location="${josm}"/>
+                <fileset dir="lib">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
             <compilerarg value="-Xlint:deprecation"/>
             <compilerarg value="-Xlint:unchecked"/>
         </javac>
@@ -74,6 +81,9 @@
         <copy todir="${plugin.build.dir}/images">
             <fileset dir="images"/>
         </copy>
+        <copy todir="${plugin.build.dir}/lib">
+            <fileset dir="lib"/>
+        </copy>
         <copy todir="${plugin.build.dir}/data">
             <fileset dir="data"/>
         </copy>
@@ -82,6 +92,7 @@
                 <include name="README"/>
                 <include name="LICENSE"/>
             </fileset>
+            <zipfileset src="lib/jts-1.12.jar"/>
         </copy>
         <jar destfile="${plugin.jar}" basedir="${plugin.build.dir}">
             <!--
@@ -93,12 +104,12 @@
             ************************************************
             -->
             <manifest>
-                <attribute name="Author" value="..."/>
-                <attribute name="Plugin-Class" value="..."/>
+                <attribute name="Author" value="Josh Doe &lt;josh@joshdoe.com&gt;"/>
+                <attribute name="Plugin-Class" value="org.openstreetmap.josm.plugins.jts.JTSPlugin"/>
                 <attribute name="Plugin-Date" value="${version.entry.commit.date}"/>
-                <attribute name="Plugin-Description" value="..."/>
-                <attribute name="Plugin-Icon" value="..."/>
-                <attribute name="Plugin-Link" value="..."/>
+                <attribute name="Plugin-Description" value="Provides Java Topology Suite (JTS) library and related utilities. Not meant to be installed directly by users, but rather as a dependency for other plugins."/>
+                <attribute name="Plugin-Icon" value="images/jts.png"/>
+                <attribute name="Plugin-Link" value="http://fixme.com"/>
                 <attribute name="Plugin-Mainversion" value="${plugin.main.version}"/>
                 <attribute name="Plugin-Version" value="${version.entry.commit.revision}"/>
             </manifest>
